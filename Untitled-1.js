@@ -16,6 +16,9 @@
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
 
+const email = document.getElementById('email').value;
+const password = document.getElementById('password').value;
+
 const container = document.querySelector('.container');
 const registerBtn = document.querySelector('.register-btn');
 const loginBtn = document.querySelector('.login-btn');
