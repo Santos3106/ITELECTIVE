@@ -1,7 +1,7 @@
 // Firebase SDK v9+ modular
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
 
 // Firebase config
@@ -25,30 +25,32 @@ const container = document.querySelector('.container');
 document.querySelector('.register-btn').addEventListener('click', () => container.classList.add('active'));
 document.querySelector('.login-btn').addEventListener('click', () => container.classList.remove('active'));
 
-// Registration logic
-document.querySelector('.form-box.register form').addEventListener('submit', function (e) {
+// Login logic
+document.querySelector('.form-box.login form').addEventListener('submit', function (e) {
   e.preventDefault();
-  const email = document.querySelector('#register-email').value;
-  const password = document.querySelector('#register-password').value;
+  const email = document.querySelector('#login-email').value;
+  const password = document.querySelector('#login-password').value;
 
-
-    if (email && password) {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        //signed up
-        const user = userCredential.user;
-        alert('Creating Account...')
-        window.location.href = "index (1).html";
-        // ...
-
-    return set(ref(db, 'users/' + user.uid), {
-          email: user.email
-        });
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      //signed in
+      const user = userCredential.user;
+      alert("Login successful!");
+      window.location.href = "MainPAge.html";
+      //...
     })
-    .then(() => {
-      alert("Registration successful!");
-    }).catch((error) => {
-      alert("Error: " + error.message);
-    });
-  }
+    .catch((error) => {
+      const errorCode = error.code;
+
+      if (errorCode === 'auth/user-not-found') {
+        alert("User not found.");
+      } else if (errorCode === 'auth/wrong-password') {
+        alert("Incorrect password.");
+      } else {
+        alert("Login failed: " + error.message);
+      }
+
+  }).catch((error) => {
+    alert("Error: " + error.message);
+  });
 });
